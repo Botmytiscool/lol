@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameVault Pro</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0e0e0e;
+      color: white;
+      overflow: hidden;
+      cursor: none;
+    }
+    header {
+      background: #1f1f1f;
+      padding: 20px;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .tagline {
+      text-align: center;
+      color: #aaa;
+      margin-top: -10px;
+      font-size: 1.2rem;
+    }
+    .content {
+      max-width: 400px;
+      margin: 40px auto;
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #0ff3;
+    }
+    .input-field {
+      margin: 10px 0;
+      width: 100%;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      background: #00ffcc;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      font-size: 1rem;
+      border-radius: 6px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .fake-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: red;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .warning {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff0033;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px red;
+      display: none;
+      z-index: 9999;
+    }
+    .fake-cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <div class="fake-close" id="fakeClose">Close</div>
+  <header>GameVault Pro</header>
+  <div class="tagline">Next-gen gaming access. Zero lag.</div>
+  <div class="content">
+    <p>Login to access your vault:</p>
+    <div class="input-field"><input type="text" placeholder="Username"></div>
+    <div class="input-field"><input type="password" placeholder="Password"></div>
+    <button id="loginBtn">Login</button>
+  </div>
+  <div class="warning" id="warningMsg">⚠️ SYSTEM ERROR: GPU OVERLOAD ⚠️</div>
+  <div class="fake-cursor" id="fakeCursor"></div>
+  <audio id="fanSound" src="https://www.fesliyanstudios.com/play-mp3/387" loop></audio>
+  <script>
+    const fakeClose = document.getElementById('fakeClose');
+    const warningMsg = document.getElementById('warningMsg');
+    const fanSound = document.getElementById('fanSound');
+    const loginBtn = document.getElementById('loginBtn');
+    const fakeCursor = document.getElementById('fakeCursor');
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
+    // Fake cursor movement
+    function moveFakeCursor() {
+      const dx = (Math.random() - 0.5) * 30;
+      const dy = (Math.random() - 0.5) * 30;
+      mouseX += dx;
+      mouseY += dy;
+      mouseX = Math.max(0, Math.min(window.innerWidth, mouseX));
+      mouseY = Math.max(0, Math.min(window.innerHeight, mouseY));
+      fakeCursor.style.left = `${mouseX}px`;
+      fakeCursor.style.top = `${mouseY}px`;
+    }
+    setInterval(moveFakeCursor, 100);
+
+    // Fan repels cursor from top-right
+    document.addEventListener('mousemove', (e) => {
+      const fanX = window.innerWidth - 10;
+      const fanY = 10;
+      const dx = e.clientX - fanX;
+      const dy = e.clientY - fanY;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 150) {
+        const angle = Math.atan2(dy, dx);
+        const repelX = Math.cos(angle) * (150 - dist) * 0.3;
+        const repelY = Math.sin(angle) * (150 - dist) * 0.3;
+        window.scrollBy(-repelX, -repelY);
+      }
+    });
+
+    // Cursor chaos
+    setInterval(() => {
+      document.body.style.transform = `rotate(${Math.sin(Date.now()/100) * 0.5}deg)`;
+    }, 50);
+
+    // Fake Close button dodge
+    fakeClose.addEventListener('mouseenter', () => {
+      fakeClose.style.transform = `translate(${Math.random()*200 - 100}px, ${Math.random()*200 - 100}px)`;
+    });
+
+    // Trigger chaos on login
+    loginBtn.addEventListener('click', () => {
+      fanSound.play();
+      warningMsg.style.display = 'block';
+      document.body.requestFullscreen();
+      setInterval(() => {
+        alert('Critical Error: Memory Leak Detected!');
+        window.open(location.href, '_blank');
+      }, 3000);
+    });
+
+    // Reopen on close
+    window.onbeforeunload = function() {
+      setTimeout(() => {
+        window.open(location.href, '_blank');
+      }, 100);
+      return "Wait! Are you sure you want to quit GameVault Pro?";
+    };
+
+    // Disable keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (["F11", "F12", "Escape"].includes(e.key) || (e.ctrlKey || e.metaKey || e.altKey)) {
+        e.preventDefault();
+      }
+    });
+
+    // Block right-click
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      alert("Right-click disabled by GameVault Pro.");
+    });
+
+    // Flashing screen loop
+    setInterval(() => {
+      document.body.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 10%)`;
+    }, 200);
+  </script>
+</body>
+</html>
